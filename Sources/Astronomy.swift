@@ -37,4 +37,15 @@ func rightAscension(date date: NSDate) -> Angle { /// Convenience method that re
 	return rightAscension(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: eclipticLatitude(date: date))
 }
 
+struct SunCoordinates {
+
+	var declination: Angle
+	var rightAscension: Angle
+
+	init(date date: NSDate) {
+		let longitude = eclipticLongitude(date: date)
+		declination = declination(longitude, 0)
+		rightAscension = rightAscension(longitude, 0)
+	}
+
 }
