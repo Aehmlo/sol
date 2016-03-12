@@ -18,3 +18,19 @@ func eclipticLongitude(meanAnomaly anomaly: Float) -> Angle { /// Returns the ec
 func eclipticLongitude(date date: NSDate) -> Angle { /// Convenience method that returns ecliptic longitude given only a date by first calculating hte mean anomaly.
 	return eclipticLongitude(meanAnomaly: solarMeanAnomaly(date: date))
 }
+
+func declination(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the declination (δ) of the Sun given ecliptic latitude and longitude.
+	return asin((sin(latitude) * cos(e)) + (cos(latitude) * sin(longitude) * sin(earthObliquity)))
+}
+
+func declination(date date: NSDate) -> Angle { /// Convenience method that returns the declination of the Sun at a given date.
+	return declination(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: eclipticLatitude(date: date))
+}
+
+func rightAscension(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the right ascension (α) of the Sun given ecliptic latitude and longitude.
+	let y = sin(longitude) * cos(earthObliquity) - tan(latitude) * sin(earthObliquity)
+	let x = cos(longitude)
+	return atan(y/x)
+}
+
+}
