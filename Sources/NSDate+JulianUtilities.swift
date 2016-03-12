@@ -10,11 +10,11 @@ extension NSDate {
 		return timeIntervalSince1970 / NSDate.DayInMilliseconds - 0.5 + NSDate.JulianUnixEpoch
 	}
 
-	var days: Double { /// Returns the number of Julian days `self` corresponds to
+	var daysSince2000: Double { /// Returns the number of Julian days since January 01, 2000 that `self` corresponds to.
 		return julianRepresentation - NSDate.Julian2000
 	}
 
-	convenience init(julianDate: NSTimeInterval) { /// Initializes a proper NSDate from its Julian representation
+	convenience init(julianDate: NSTimeInterval) { /// Initializes a proper NSDate from its Julian representation.
 		self.init(timeIntervalSince1970: (julianDate + 0.5 - NSDate.JulianUnixEpoch) * NSDate.DayInMilliseconds)	
 	}
 
