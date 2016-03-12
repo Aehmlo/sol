@@ -10,7 +10,7 @@ extension NSDate {
 		return timeIntervalSince1970 / NSDate.DayInMilliseconds - 0.5 + NSDate.JulianUnixEpoch
 	}
 
-	var days: Double { /// Returns the number of days this date corresponds to
+	var days: Double { /// Returns the number of days `self` corresponds to
 		return julianRepresentation - NSDate.Julian2000
 	}
 
