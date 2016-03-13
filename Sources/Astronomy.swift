@@ -1,5 +1,11 @@
 import Foundation
 
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
+
 let earthObliquity = 23.4397 * radianConversionFactor
 
 typealias Angle = Float
