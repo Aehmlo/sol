@@ -122,8 +122,8 @@ struct SunCoordinates {
 	init(date d: NSDate?) {
 		let date = d ?? NSDate()
 		let longitude = eclipticLongitude(date: date)
-		declination = declination(eclipticLongitude: longitude, eclipticLatitude: 0)
-		rightAscension = rightAscension(eclipticLongitude: longitude, eclipticLatitude: 0)
+		self.declination = declination(eclipticLongitude: longitude, eclipticLatitude: 0)
+		self.rightAscension = rightAscension(eclipticLongitude: longitude, eclipticLatitude: 0)
 	}
 
 }
@@ -141,8 +141,8 @@ struct SunPosition {
 		let longitude = long * radianConversionFactor
 		let latitude = lat * radianConversionFactor
 		let time = siderealTime(date: date, longitude: longitude) - coordinates.rightAscension
-		azimuth = azimuth(time: time, latitude: latitude, declination: coordinates.declination)
-		altitude = altitude(time: time, latitude: latitude, declination: coordinates.declination)
+		self.azimuth = azimuth(time: time, latitude: latitude, declination: coordinates.declination)
+		self.altitude = altitude(time: time, latitude: latitude, declination: coordinates.declination)
 	}
 
 }
