@@ -74,6 +74,40 @@ func refraction(altitude: Float) -> Float { /// Returns the astronomical refract
 	return 0.0002967 / tan(h + 0.00312536 / (h + 0.08901179)) // Here be dragons
 }
 
+// More stuff
+
+func julianCycle(days days: Float, longitude: Angle) -> Int {
+	return round(days - NSDate.Julian0 - (longitude / (2 * π)))
+}
+
+func julianCycle(date date: NSDate, longitude: Angle) -> Int {
+	return julianCycle(days: date.daysSince2000, longitude: longitude)
+}
+
+func approximateTransit(time time: Angle, longitude: Angle, days: Float) -> Float {
+	let n = julianCycle(days: days, longitude: longitude)
+	return NSDate.Julian0 + ((time + longitude) / (2 * π)) + n
+}
+
+func approximateTransit(time time: Angle, longitude: Angle, date: NSDate) -> Float {
+	return approximateTransit(time: time, longitude: longitude, days: date.daysSince2000)
+}
+
+func solarTransitDay(approximateTransit transit: Float, meanAnomaly anomaly: Angle, eclipticLongitude longitude: Angle) -> Float { /// Returns the Julian day of the solar transit in question
+	return NSDate.Julian2000 + transit + (0.0053 * sin(anomaly)) - (0.0069 * sin(2 * longitude))
+}
+
+func hourAngle(altitude altitude: Angle, latitude: Angle, declination: Angle) -> Angle { /// Returns the hour angle for a given sun altitude and declination and at a certain latitude.
+	return acos((sin(altitude) - (sin(latitude) * sin(declination))) / (cos(latitude) * cos(declination)))
+}
+
+func sunsetDay(altitude altitude: Angle, longitude: Angle, latitude: Angle, declination: Angle, days: Float, meanAnomaly: Angle, eclipticLongitude: Angle) -> Float { /// Returns the Julian day for sunset time 
+	let transit = approximateTransit(time: hourAngle(altitude: altitude, longitude: longitude, declination: declination), longitude: longitude, days: days)
+	return solarTransitDay(approximateTransit: transit, meanAnomaly: meanAnomaly, eclipticLongitude: eclipticLongitude)
+}
+
+// Structures to encapsulate coordinate and position information
+
 struct SunCoordinates {
 
 	let declination: Angle
@@ -93,10 +127,10 @@ Struct SunPosition {
 	let azimuth: Float
 	let altitude: Float
 
-	init(date d: NSDate?, latitude: Float) { // Latitude in degrees
+	init(date d: NSDate?, latitude lat: Float, longitude long: Float) { // Latitude, longitude in degrees
 		let date = d ?? NSDate()
-		let latitude = radianConversionFactor * latitude
-		let longitude = radianConversionFactor * -longitude
+		let lat = radianConversionFactor * lat
+		let long = radianConversionFactor * -long
 		let coordinates = SunCoordinates(date: date)
 		let time = siderealTime(date: date, longitude: longitude) - coordinates.rightAscension
 		azimuth = azimuth(time: time, latitude: latitude, declination: coordinates.declination)
@@ -104,3 +138,17 @@ Struct SunPosition {
 	}
 
 }
+
+// Time to set up the actual sunrise/sunset event stuff!
+
+typealias Name = (String, String) // (MorningName, NightName)
+typealias Event = [Angle: Name]
+
+let significantEvents: [Event] = [ // https://github.com/mourner/suncalc/blob/master/suncalc.js#L103,L108
+	[-0.833: ("sunrise", "sunset")],
+	[-0.3: ("sunriseEnd", "sunsetStart")],
+	[-6: ("dawn", "dusk")],
+	[-12: ("nauticalDawn", "nauticalDusk")],
+	[-18: ("nightEnd", "night")],
+	[6: ("goldenHourEnd", "goldenHour")]
+]
