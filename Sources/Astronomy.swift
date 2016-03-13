@@ -36,7 +36,7 @@ func eclipticLongitude(date date: NSDate) -> Angle { /// Convenience method that
 // Equatorial coordinates
 
 func declination(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the declination (δ) of the Sun given ecliptic latitude and longitude.
-	return asin((sin(latitude) * cos(e)) + (cos(latitude) * sin(longitude) * sin(earthObliquity)))
+	return asin((sin(latitude) * cos(earthObliquity)) + (cos(latitude) * sin(longitude) * sin(earthObliquity)))
 }
 
 func declination(date date: NSDate) -> Angle { /// Convenience method that returns the declination of the Sun at a given date.
