@@ -35,35 +35,35 @@ func eclipticLongitude(date date: NSDate) -> Angle { /// Convenience method that
 
 // Equatorial coordinates
 
-func declination(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the declination (δ) of the Sun given ecliptic latitude and longitude.
+func getDeclination(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the declination (δ) of the Sun given ecliptic latitude and longitude.
 	return asin((sin(latitude) * cos(earthObliquity)) + (cos(latitude) * sin(longitude) * sin(earthObliquity)))
 }
 
-func declination(date date: NSDate) -> Angle { /// Convenience method that returns the declination of the Sun at a given date.
-	return declination(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: 0)
+func getDeclination(date date: NSDate) -> Angle { /// Convenience method that returns the declination of the Sun at a given date.
+	return getDeclination(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: 0)
 }
 
-func rightAscension(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the right ascension (α) of the Sun given ecliptic latitude and longitude.
+func getRightAscension(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the right ascension (α) of the Sun given ecliptic latitude and longitude.
 	let y = sin(longitude) * cos(earthObliquity) - tan(latitude) * sin(earthObliquity)
 	let x = cos(longitude)
 	return atan(y/x) // TODO: Investigate to ensure this is actually correct
 }
 
-func rightAscension(date date: NSDate) -> Angle { /// Convenience method that returns the right ascension of the Sun at a given date.
-	return rightAscension(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: 0) // TODO: Verify that this works properly
+func getRightAscension(date date: NSDate) -> Angle { /// Convenience method that returns the right ascension of the Sun at a given date.
+	return getRightAscension(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: 0) // TODO: Verify that this works properly
 }
 
 // As seen by the observer on Earth
 
 // Azimuth, altitude, sidereal time, and refraction
 
-func azimuth(time time: Angle, latitude: Angle, declination: Angle) -> Angle {
+func getAzimuth(time time: Angle, latitude: Angle, declination: Angle) -> Angle {
 	let y = sin(time)
 	let x = (cos(time) * sin(latitude)) - (tan(declination) * cos(latitude))
 	return atan(y/x)
 }
 
-func altitude(time time: Angle, latitude: Angle, declination: Angle) -> Angle {
+func getAltitude(time time: Angle, latitude: Angle, declination: Angle) -> Angle {
 	return asin((sin(latitude) * sin(declination)) + (cos(latitude) * cos(declination) * cos(time)))
 }
 
@@ -122,8 +122,8 @@ struct SunCoordinates {
 	init(date d: NSDate?) {
 		let date = d ?? NSDate()
 		let longitude = eclipticLongitude(date: date)
-		self.declination = declination(eclipticLongitude: longitude, eclipticLatitude: 0)
-		self.rightAscension = rightAscension(eclipticLongitude: longitude, eclipticLatitude: 0)
+		self.declination = getDeclination(eclipticLongitude: longitude, eclipticLatitude: 0)
+		self.rightAscension = getRightAscension(eclipticLongitude: longitude, eclipticLatitude: 0)
 	}
 
 }
@@ -141,8 +141,8 @@ struct SunPosition {
 		let longitude = long * radianConversionFactor
 		let latitude = lat * radianConversionFactor
 		let time = siderealTime(date: date, longitude: longitude) - coordinates.rightAscension
-		self.azimuth = azimuth(time: time, latitude: latitude, declination: coordinates.declination)
-		self.altitude = altitude(time: time, latitude: latitude, declination: coordinates.declination)
+		self.azimuth = getAzimuth(time: time, latitude: latitude, declination: coordinates.declination)
+		self.altitude = getAltitude(time: time, latitude: latitude, declination: coordinates.declination)
 	}
 
 }
