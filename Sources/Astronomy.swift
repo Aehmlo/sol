@@ -138,6 +138,8 @@ struct SunPosition {
 		let lat = radianConversionFactor * lat
 		let long = radianConversionFactor * -long
 		let coordinates = SunCoordinates(date: date)
+		let longitude = long * radianConversionFactor
+		let latitude = lat * radianConversionFactor
 		let time = siderealTime(date: date, longitude: longitude) - coordinates.rightAscension
 		azimuth = azimuth(time: time, latitude: latitude, declination: coordinates.declination)
 		altitude = altitude(time: time, latitude: latitude, declination: coordinates.declination)
