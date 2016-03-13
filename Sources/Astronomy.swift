@@ -50,7 +50,7 @@ func rightAscension(eclipticLongitude longitude: Angle, eclipticLatitude latitud
 }
 
 func rightAscension(date date: NSDate) -> Angle { /// Convenience method that returns the right ascension of the Sun at a given date.
-	return rightAscension(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: eclipticLatitude(date: date))
+	return rightAscension(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: 0) // TODO: Verify that this works properly
 }
 
 // As seen by the observer on Earth
