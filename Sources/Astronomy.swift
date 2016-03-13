@@ -40,7 +40,7 @@ func declination(eclipticLongitude longitude: Angle, eclipticLatitude latitude: 
 }
 
 func declination(date date: NSDate) -> Angle { /// Convenience method that returns the declination of the Sun at a given date.
-	return declination(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: eclipticLatitude(date: date))
+	return declination(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: 0)
 }
 
 func rightAscension(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the right ascension (α) of the Sun given ecliptic latitude and longitude.
@@ -82,7 +82,7 @@ func refraction(altitude: Double) -> Double { /// Returns the astronomical refra
 
 // More stuff
 
-func julianCycle(days days: Double, longitude: Angle) -> Int {
+func julianCycle(days days: Double, longitude: Angle) -> Double {
 	return round(days - NSDate.Julian0 - (longitude / (2 * π)))
 }
 
@@ -108,7 +108,7 @@ func hourAngle(altitude altitude: Angle, latitude: Angle, declination: Angle) ->
 }
 
 func sunsetDay(altitude altitude: Angle, longitude: Angle, latitude: Angle, declination: Angle, days: Double, meanAnomaly: Angle, eclipticLongitude: Angle) -> Double { /// Returns the Julian day for sunset time 
-	let transit = approximateTransit(time: hourAngle(altitude: altitude, longitude: longitude, declination: declination), longitude: longitude, days: days)
+	let transit = approximateTransit(time: hourAngle(altitude: altitude, latitude: latitude, declination: declination), longitude: longitude, days: days)
 	return solarTransitDay(approximateTransit: transit, meanAnomaly: meanAnomaly, eclipticLongitude: eclipticLongitude)
 }
 
@@ -122,8 +122,8 @@ struct SunCoordinates {
 	init(date d: NSDate?) {
 		let date = d ?? NSDate()
 		let longitude = eclipticLongitude(date: date)
-		declination = declination(longitude, 0)
-		rightAscension = rightAscension(longitude, 0)
+		declination = declination(eclipticLongitude: longitude, eclipticLatitude: 0)
+		rightAscension = rightAscension(eclipticLongitude: longitude, eclipticLatitude: 0)
 	}
 
 }
