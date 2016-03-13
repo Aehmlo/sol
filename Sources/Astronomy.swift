@@ -86,7 +86,7 @@ func julianCycle(days days: Double, longitude: Angle) -> Double {
 	return round(days - NSDate.Julian0 - (longitude / (2 * π)))
 }
 
-func julianCycle(date date: NSDate, longitude: Angle) -> Int {
+func julianCycle(date date: NSDate, longitude: Angle) -> Double {
 	return julianCycle(days: date.daysSince2000, longitude: longitude)
 }
 
