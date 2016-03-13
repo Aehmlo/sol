@@ -4,9 +4,15 @@ let earthObliquity = 23.4397 * radianConversionFactor
 
 typealias Angle = Float
 
+// General solar stuff
+
+// Orbit stuff
+
 func solarMeanAnomaly(date date: NSDate) -> Angle { /// Returns the mean anomaly (position that Earth would be in relative to its perihelion in a circular orbit) for `date`.
 	return (357.5291 + ((date.julianRepresentation - NSDate.Julian2000) * 0.98560028)) * radianConversionFactor
 }
+
+// Ecliptic coordinates
 
 func eclipticLongitude(meanAnomaly anomaly: Float) -> Angle { /// Returns the ecliptic longitude of the Earth given its mean anomaly.
 	let center = (1.9148 * sin(anomaly) + 0.02 * sin(2 * anomaly) + 0.0003 * sin(3 * anomaly)) * radianConversionFactor
@@ -18,6 +24,10 @@ func eclipticLongitude(meanAnomaly anomaly: Float) -> Angle { /// Returns the ec
 func eclipticLongitude(date date: NSDate) -> Angle { /// Convenience method that returns ecliptic longitude given only a date by first calculating hte mean anomaly.
 	return eclipticLongitude(meanAnomaly: solarMeanAnomaly(date: date))
 }
+
+// General position calculations
+
+// Equatorial coordinates
 
 func declination(eclipticLongitude longitude: Angle, eclipticLatitude latitude: Angle) -> Angle { /// Returns the declination (δ) of the Sun given ecliptic latitude and longitude.
 	return asin((sin(latitude) * cos(e)) + (cos(latitude) * sin(longitude) * sin(earthObliquity)))
@@ -36,6 +46,10 @@ func rightAscension(eclipticLongitude longitude: Angle, eclipticLatitude latitud
 func rightAscension(date date: NSDate) -> Angle { /// Convenience method that returns the right ascension of the Sun at a given date.
 	return rightAscension(eclipticLongitude: eclipticLongitude(date: date), eclipticLatitude: eclipticLatitude(date: date))
 }
+
+// As seen by the observer on Earth
+
+// Azimuth, altitude, sidereal time, and refraction
 
 func azimuth(time time: Angle, latitude: Angle, declination: Angle) -> Angle {
 	let y = sin(time)
