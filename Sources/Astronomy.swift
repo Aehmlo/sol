@@ -122,7 +122,7 @@ struct SunCoordinates {
 
 }
 
-Struct SunPosition {
+struct SunPosition {
 
 	let azimuth: Float
 	let altitude: Float
